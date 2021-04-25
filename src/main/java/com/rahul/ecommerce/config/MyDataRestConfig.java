@@ -1,7 +1,9 @@
 package com.rahul.ecommerce.config;
 
+import com.rahul.ecommerce.entity.Country;
 import com.rahul.ecommerce.entity.Product;
 import com.rahul.ecommerce.entity.ProductCategory;
+import com.rahul.ecommerce.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -31,19 +33,20 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         HttpMethod[] theUnsupportedActions = {HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.POST};
 
         //disabling Http methods for Product : DELETE, PUT, POST
+        disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
+        disableHttpMethods(Product.class, config, theUnsupportedActions);
+        disableHttpMethods(Country.class, config, theUnsupportedActions);
+        disableHttpMethods(State.class, config, theUnsupportedActions);
 
-        config.getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions)))
-                .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions)));
+        exposeIds(config);
+    }
 
+    private void disableHttpMethods(Class theClass, RepositoryRestConfiguration config,
+                                    HttpMethod[] theUnsupportedActions) {
         config.getExposureConfiguration()
                 .forDomainType(ProductCategory.class)
                 .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions)))
                 .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions)));
-
-
-        exposeIds(config);
     }
 
     private void exposeIds(RepositoryRestConfiguration config) {
